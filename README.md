@@ -29,6 +29,7 @@ SSH keys are not used for the grader account.
 
 ### Deployment Flow
 1. Changes are made in each user's `~/site-src`
+'~/home/scottin/site-src/`
 2. Code is committed locally
 3. Code is pushed to GitHub (`origin`)
 4. Code is pushed to the production remote (`prod`)
