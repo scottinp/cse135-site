@@ -28,8 +28,6 @@ SSH keys are not used for the grader account.
   `/var/www/yourdomain.site/public_html`
 
 ### Deployment Flow
-1. Changes are made in each user's `~/site-src`
-2. Code is committed locally
-3. Code is pushed to GitHub (`origin`)
-4. Code is pushed to the production remote (`prod`)
-5. When code pushed to the prod, the server updates website by copying the latest version of the files into the Apache directory
+1. Edit files directly in the main project directory
+2. Users push changes
+3. Website updates and repository
