@@ -3,6 +3,7 @@
 ## Team Members
 - **Scottin Pham**
 - **Tri Nguyen**
+- **Brian Gasca**
 
 ### Grader Account
 - **Username:** `grader`
