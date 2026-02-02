@@ -21,12 +21,10 @@ SSH keys are not used for the grader account.
 ## GitHub Auto-Deploy Setup
 
 ### Repository Structure
-- **Source repository:**  
-  `~/site-src`
-- **Bare deployment repository:**  
-  `/var/repo/cse135-site.git`
+- **Working repository:**  
+  `/srv/cse135-site`
 - **Live site directory:**  
-  `/var/www/yourdomain.site/public_html`
+  `/var/www/scottin.info/public_html`
 
 ### Deployment Flow
 1. Edit files in /srv/cse135-site
