@@ -29,6 +29,7 @@ SSH keys are not used for the grader account.
   `/var/www/yourdomain.site/public_html`
 
 ### Deployment Flow
-1. Edit files directly in the main project directory
-2. Users push changes
-3. Website updates and repository
+1. Edit files in /srv/cse135-site
+2. Commit and push changes from /srv/cse135-site
+3. Run deploy-site to sync to /var/www/scottin.info/public_html
+4. Website updates and repository
