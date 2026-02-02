@@ -5,6 +5,10 @@
 - **Tri Nguyen**
 - **Brian Gasca**
 
+### Site Authentication
+- **Username:** `cse135`
+- **Password:** `$scottinP`
+
 ### Grader Account
 - **Username:** `grader`
 - **Password:** `grader123`
