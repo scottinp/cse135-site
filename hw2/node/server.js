@@ -1,6 +1,7 @@
 const express = require("express");
 const os = require("os");
 
+const sessions = {};
 const app = express();
 app.set("trust proxy", true);
 
@@ -47,7 +48,32 @@ app.all("/echo-node", (req, res) => {
     query: req.query,
     body: req.body
   });
+});i
+
+app.all("/state-set-node", (req, res) => {
+  const sid = req.headers.cookie?.replace("sid=","") || Math.random().toString(36);
+  if (req.method === "POST") {
+    sessions[sid] = req.body.value || "";
+    res.setHeader("Set-Cookie", `sid=${sid}`);
+    res.redirect("/hw2/node/state-view-node");
+  } else {
+    res.send('<form method="POST"><input name="value"><button>Save</button></form>');
+  }
 });
+
+app.get("/state-view-node", (req, res) => {
+  const sid = req.headers.cookie?.replace("sid=","");
+  res.send(`<p>Saved value: ${sessions[sid] || "(none)"}</p>
+            <a href="/hw2/node/state-clear-node">Clear</a>`);
+});
+
+app.get("/state-clear-node", (req, res) => {
+  const sid = req.headers.cookie?.replace("sid=","");
+  delete sessions[sid];
+  res.setHeader("Set-Cookie","sid=; Max-Age=0");
+  res.redirect("/hw2/node/state-set-node");
+});
+
 
 app.listen(3001, "127.0.0.1");
 
