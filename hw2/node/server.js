@@ -9,6 +9,12 @@ app.set("trust proxy", true);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+function getSid(req) {
+  const h = req.headers.cookie || "";
+  const m = h.match(/(?:^|;\s*)sid=([^;]+)/);
+  return m ? m[1] : null;
+}
+
 app.all("/hello-html-node", (req, res) => {
   res.set("Content-Type", "text/html");
   res.send(
@@ -48,29 +54,35 @@ app.all("/echo-node", (req, res) => {
     query: req.query,
     body: req.body
   });
-});i
+});
 
 app.all("/state-set-node", (req, res) => {
-  const sid = req.headers.cookie?.replace("sid=","") || Math.random().toString(36);
+  let sid = (req.headers.cookie || "").match(/sid=([^;]+)/)?.[1];
+  if (!sid) sid = Math.random().toString(36).slice(2);
+
   if (req.method === "POST") {
     sessions[sid] = req.body.value || "";
-    res.setHeader("Set-Cookie", `sid=${sid}`);
-    res.redirect("/hw2/node/state-view-node");
-  } else {
-    res.send('<form method="POST"><input name="value"><button>Save</button></form>');
+    res.setHeader("Set-Cookie", `sid=${sid}; Path=/hw2/node`);
+    return res.redirect("/hw2/node/state-view-node");
   }
+
+  res.setHeader("Set-Cookie", `sid=${sid}; Path=/hw2/node`);
+  res.send(`<form method="POST">
+              <input name="value">
+              <button>Save</button>
+            </form>`);
 });
 
 app.get("/state-view-node", (req, res) => {
-  const sid = req.headers.cookie?.replace("sid=","");
+  const sid = (req.headers.cookie || "").match(/sid=([^;]+)/)?.[1];
   res.send(`<p>Saved value: ${sessions[sid] || "(none)"}</p>
             <a href="/hw2/node/state-clear-node">Clear</a>`);
 });
 
 app.get("/state-clear-node", (req, res) => {
-  const sid = req.headers.cookie?.replace("sid=","");
+  const sid = (req.headers.cookie || "").match(/sid=([^;]+)/)?.[1];
   delete sessions[sid];
-  res.setHeader("Set-Cookie","sid=; Max-Age=0");
+  res.setHeader("Set-Cookie", "sid=; Path=/hw2/node; Max-Age=0");
   res.redirect("/hw2/node/state-set-node");
 });
 
