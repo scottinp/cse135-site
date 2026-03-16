@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Echo Form</title></head>
+<body>
+<h1>Echo Form</h1>
+
+<form id="f" action="/hw2/php/echo-php.php" method="post">
+  <label>Language:
+    <select id="lang">
+      <option value="php">PHP</option>
+      <option value="python">Python</option>
+      <option value="node">Node</option>
+    </select>
+  </label><br><br>
+
+  <label>Method:
+    <select id="method">
+      <option>GET</option>
+      <option>POST</option>
+      <option>PUT</option>
+      <option>DELETE</option>
+    </select>
+  </label><br><br>
+
+  <label>Encoding:
+    <select id="enc">
+      <option value="application/x-www-form-urlencoded">x-www-form-urlencoded</option>
+      <option value="application/json">application/json</option>
+    </select>
+  </label><br><br>
+
+  <label>Value: <input id="value" name="value"></label><br><br>
+  <button>Submit</button>
+</form>
+
+<pre id="out"></pre>
+
+<noscript>
+  <p>JS off: this submits a basic POST (urlencoded) to the default endpoint.</p>
+</noscript>
+
+<script>
+const ep = {
+  php: "/hw2/php/echo-php.php",
+  python: "/hw2/python/echo-python.py",
+  node: "/hw2/node/echo-node"
+};
+
+const f = document.getElementById("f");
+const out = document.getElementById("out");
+
+f.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+
+  const lang = document.getElementById("lang").value;
+  const method = document.getElementById("method").value;
+  const enc = document.getElementById("enc").value;
+  const value = document.getElementById("value").value;
+
+  let url = ep[lang];
+  let headers = {};
+  let body = null;
+
+  if (method === "GET") {
+    url += "?value=" + encodeURIComponent(value);
+  } else if (enc === "application/json") {
+    headers["Content-Type"] = "application/json";
+    body = JSON.stringify({ value });
+  } else {
+    headers["Content-Type"] = "application/x-www-form-urlencoded";
+    body = new URLSearchParams({ value }).toString();
+  }
+
+  const r = await fetch(url, { method, headers, body });
+  out.textContent = await r.text();
+});
+</script>
+</body>
+</html>
