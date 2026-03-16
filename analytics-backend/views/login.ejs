@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <style>
+    * {
+    box-sizing: border-box;
+    }
+
+    body {
+        font-family: system-ui, sans-serif;
+        background-color: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color: #333;
+    }
+
+    .login-container {
+        background-color: #fff;
+        padding: 2rem 2.5rem;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        width: 100%;
+        max-width: 360px;
+    }
+
+    h1 {
+        display: flex;
+        justify-content: center;
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #111;
+    }
+
+    .login-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.4rem;
+        color: #555;
+    }
+
+    .username-input,
+    .password-input {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.95rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        outline: none;
+        transition: border-color 0.15s;
+    }
+
+    .login-logo {
+        display: flex;
+        justify-content: center;
+    }
+
+    .login-logo img{
+        max-width: 100px;
+    }
+
+    .submit-button {
+        width: 100%;
+        padding: 0.6rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+        background-color: #2c5f8a;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.15s;
+    }
+
+    .submit-button:hover {
+        background-color: #24506e;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+
+    <div class="login-logo">
+      <img src="https://i.pinimg.com/736x/a6/cf/52/a6cf52ae50acb00ac906c23654cf0f90.jpg" alt="Logo" />
+    </div>
+    
+    <h1>Report Login</h1>
+
+  <% if (error) { %>
+    <p style="color:red;"><%= error %></p>
+  <% } %>
+
+  <form method="POST" action="/backend/login">
+    <div>
+      <label class="login-label">Username:</label>
+      <input class="username-input" type="text" name="username" required />
+    </div>
+    <br />
+    <div>
+      <label class="login-label">Password:</label>
+      <input class="password-input" type="password" name="password" required />
+    </div>
+    <br />
+    <button class="submit-button" type="submit">Login</button>
+  </form>
+  </div>
+</body>
+</html>

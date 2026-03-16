@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard</title>
+  <style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: system-ui, sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+        margin: 0;
+    }
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #2c5f8a;
+        padding: 0.75rem 1.5rem;
+    }
+
+    .nav-logo {
+        height: 32px;
+        width: auto;
+        margin-right: 1rem;
+        vertical-align: middle;
+    }
+
+    .nav-links a {
+        color: #fff;
+        text-decoration: none;
+        margin-right: 1.25rem;
+        font-size: 0.95rem;
+    }
+
+    .nav-links a:hover {
+        text-decoration: underline;
+    }
+
+    .nav-logout {
+        color: #f0c0c0;
+        text-decoration: none;
+        font-size: 0.95rem;
+    }
+
+    .nav-logout:hover {
+        text-decoration: underline;
+    }
+
+    main {
+        padding: 2rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #111;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-links">
+      <img src="https://i.pinimg.com/736x/54/ef/8f/54ef8f8d68338b47a6de0e28655ec6fc.jpg" alt="Logo" class="nav-logo" />
+      <a href="/backend/dashboard">Dashboard</a>
+      <a href="/backend/reports">Reports</a>
+    </div>
+    <a class="nav-logout" href="/backend/logout">Logout</a>
+</nav>
+
+  <h1>Dashboard</h1>
+  <p>Welcome, <strong><%= user.username %></strong></p>
+</body>
+</html>

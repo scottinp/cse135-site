@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title><%= title || 'Reports' %></title>
+  <style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: system-ui, sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+        margin: 0;
+    }
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #2c5f8a;
+        padding: 0.75rem 1.5rem;
+    }
+
+    .nav-links a {
+        color: #fff;
+        text-decoration: none;
+        margin-right: 1.25rem;
+        font-size: 0.95rem;
+    }
+
+    .nav-links a:hover {
+        text-decoration: underline;
+    }
+
+    .nav-logout {
+        color: #f0c0c0;
+        text-decoration: none;
+        font-size: 0.95rem;
+    }
+
+    .nav-logout:hover {
+        text-decoration: underline;
+    }
+
+    main {
+        padding: 2rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        color: #111;
+    }
+
+    h2 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 2rem 0 0.75rem;
+        color: #222;
+    }
+
+    p {
+        margin: 0.4rem 0;
+        font-size: 0.95rem;
+    }
+
+    a {
+        color: #2c5f8a;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    canvas {
+        display: block;
+        margin-bottom: 2rem;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 1rem;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #fff;
+        border-radius: 6px;
+        overflow: hidden;
+        font-size: 0.9rem;
+    }
+
+    thead {
+        background-color: #2c5f8a;
+        color: #fff;
+    }
+
+    thead th {
+        padding: 0.65rem 0.75rem;
+        text-align: left;
+        font-weight: 500;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #f7f9fb;
+    }
+
+    tbody tr:hover {
+        background-color: #eaf1f8;
+    }
+
+    tbody td {
+        padding: 0.6rem 0.75rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .nav-logo {
+        height: 32px;
+        width: auto;
+        margin-right: 1rem;
+        vertical-align: middle;
+    }
+
+    .page-banner {
+        width: 100%;
+        height: 80px;
+        background: linear-gradient(135deg, #2c5f8a 0%, #4a90d9 100%);
+        border-radius: 6px;
+        margin-bottom: 1.25rem;
+    }
+
+    .export-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background-color: #2c5f8a;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: background-color 0.15s;
+    }
+
+    .export-btn:hover {
+        background-color: #24506e;
+        text-decoration: none;
+    }
+
+    .export-icon {
+        height: 16px;
+        width: auto;
+    }
+
+    .page-footer-img {
+        margin-top: 2rem;
+        text-align: center;
+    }
+
+    .page-footer-img img {
+        max-width: 200px;
+        opacity: 0.4;
+    }
+
+    .report-links {
+        margin: 0.75rem 0 1rem;
+    }
+
+    .report-links a {
+        margin-right: 1rem;
+        font-weight: 500;
+    }
+
+    .analyst-comment {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 0.9rem 1rem;
+        margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-links">
+      <img src="https://i.pinimg.com/736x/54/ef/8f/54ef8f8d68338b47a6de0e28655ec6fc.jpg" alt="Logo" class="nav-logo" />
+      <a href="/backend/dashboard">Dashboard</a>
+      <a href="/backend/reports">Reports</a>
+    </div>
+    <a class="nav-logout" href="/backend/logout">Logout</a>
+  </nav>
+
+  <main>
+
+    <div class="page-banner"></div>
+
+    <h1><%= title || 'Reports' %></h1>
+    <p>You are logged in as <strong><%= user.username %></strong></p>
+    <p>
+      <a href="/backend/reports/export" class="export-btn">
+        Export PDF
+      </a>
+    </p>
+
+    <div class="report-links">
+      <a href="/backend/reports">Intentional Interactions</a>
+      <a href="/backend/reports/pages">Page Engagement</a>
+      <a href="/backend/reports/exits">Exit Distribution</a>
+    </div>
+
+    <div class="analyst-comment">
+      <strong>Analyst Comment:</strong>
+      <p><%= comment %></p>
+    </div>
+
+    <h2><%= title || 'Report' %> Chart</h2>
+    <canvas id="eventTypeChart" width="600" height="300"></canvas>
+
+    <h2>Collected Analytics Data</h2>
+    <table border="1" cellpadding="6" cellspacing="0">
+      <thead>
+        <tr>
+          <th><%= tableLabelHeader %></th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% rows.forEach(row => { %>
+          <tr>
+            <td><%= row.label %></td>
+            <td><%= row.total %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <div class="page-footer-img">
+      <img src="https://i.pinimg.com/736x/c1/4b/1c/c14b1c9a7e1efc698dd489e3bdec467b.jpg" alt="" role="presentation" />
+    </div>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const chartLabels = <%- JSON.stringify(chartLabels) %>;
+    const chartValues = <%- JSON.stringify(chartValues) %>;
+
+    const ctx = document.getElementById('eventTypeChart');
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: chartLabels,
+        datasets: [{
+          label: 'Number of Events',
+          data: chartValues
+        }]
+      },
+      options: {
+        responsive: false,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
