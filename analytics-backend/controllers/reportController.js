@@ -2,6 +2,15 @@ const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
 const analyticsModel = require('../models/analyticsModel');
+const puppeteer = require('puppeteer');
+
+
+function getReportPath(type) {
+  if (type === 'pages') return '/backend/reports/pages';
+  if (type === 'exits') return '/backend/reports/exits';
+  return '/backend/reports';
+}
+
 
 function showDashboard(req, res) {
   res.render('dashboard', { user: req.session.user });
@@ -40,7 +49,8 @@ async function showReports(req, res) {
       title: 'Intentional Interactions',
       comment: buildComment('intentional', rows),
       tableLabelHeader: 'Event Type',
-      rows
+      rows,
+      reportType: 'intentional'
     });
   } catch (error) {
     res.status(500).send('Failed to load reports data: ' + error.message);
@@ -62,7 +72,8 @@ async function showPageEngagement(req, res) {
       title: 'Page Engagement',
       comment: buildComment('pages', rows),
       tableLabelHeader: 'Page URL',
-      rows
+      rows,
+      reportType: 'pages'
     });
   } catch (error) {
     res.status(500).send('Failed to load reports data: ' + error.message);
@@ -84,7 +95,8 @@ async function showExitDistribution(req, res) {
       title: 'Exit Distribution',
       comment: buildComment('exits', rows),
       tableLabelHeader: 'Page URL',
-      rows
+      rows,
+      reportType: 'exits'
     });
   } catch (error) {
     res.status(500).send('Failed to load reports data: ' + error.message);
@@ -92,41 +104,46 @@ async function showExitDistribution(req, res) {
 }
 
 async function exportReportsPdf(req, res) {
-  try {
-    const events = await analyticsModel.getRecentEvents();
+  const type = req.query.type || 'intentional';
+  const reportPath = getReportPath(type);
 
-    const exportsDir = path.join(__dirname, '..', 'exports');
-    fs.mkdirSync(exportsDir, { recursive: true });
+  const exportsDir = path.join(__dirname, '..', 'exports');
+  fs.mkdirSync(exportsDir, { recursive: true });
 
-    const filename = `report-${Date.now()}.pdf`;
-    const filePath = path.join(exportsDir, filename);
+  const filename = `${type}-report-${Date.now()}.pdf`;
+  const filePath = path.join(exportsDir, filename);
 
-    const doc = new PDFDocument();
-    const stream = fs.createWriteStream(filePath);
+  const pageUrl = `http://127.0.0.1:3000${reportPath}`;
 
-    doc.pipe(stream);
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox']
+  });
 
-    doc.fontSize(18).text('Analytics Report');
-    doc.moveDown();
-    doc.fontSize(12).text(`User: ${req.session.user.username}`);
-    doc.text(`Generated: ${new Date().toISOString()}`);
-    doc.moveDown();
+  const page = await browser.newPage();
 
-    events.forEach((event, i) => {
-      doc.text(
-        `${i + 1}. ${event.event_type} | ${event.page_url || ''} | ${event.event_time}`
-      );
-      doc.moveDown(0.3);
+  if (req.headers.cookie) {
+    await page.setExtraHTTPHeaders({
+      cookie: req.headers.cookie
     });
-
-    doc.end();
-
-    stream.on('finish', () => {
-      res.redirect(`/backend/exports/${filename}`);
-    });
-  } catch (error) {
-    res.status(500).send('Failed to export PDF: ' + error.message);
   }
+
+  await page.goto(pageUrl, { waitUntil: 'networkidle2' });
+  await page.emulateMediaType('screen');
+
+  await page.pdf({
+    path: filePath,
+    format: 'Letter',
+    printBackground: true,
+    margin: {
+      top: '0.5in',
+      right: '0.5in',
+      bottom: '0.5in',
+      left: '0.5in'
+    }
+  });
+
+  await browser.close();
+  res.redirect(`/backend/exports/${filename}`);
 }
 
 function viewExport(req, res) {

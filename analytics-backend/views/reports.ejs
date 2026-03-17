@@ -202,7 +202,7 @@
     <h1><%= title || 'Reports' %></h1>
     <p>You are logged in as <strong><%= user.username %></strong></p>
     <p>
-      <a href="/backend/reports/export" class="export-btn">
+    <a href="/backend/reports/export?type=<%= reportType %>" class="export-btn">
         Export PDF
       </a>
     </p>

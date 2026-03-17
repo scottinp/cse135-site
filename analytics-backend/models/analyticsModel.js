@@ -32,8 +32,19 @@ async function getExitDistribution() {
   return rows;
 }
 
+async function getRecentEvents() {
+  const [rows] = await db.execute(`
+    SELECT id, event_type, page_url, event_time, session_id, env
+    FROM collector_events
+    ORDER BY id DESC
+    LIMIT 50
+  `);
+  return rows;
+}
+
 module.exports = {
   getIntentionalInteractions,
   getPageEngagement,
-  getExitDistribution
+  getExitDistribution,
+  getRecentEvents
 };

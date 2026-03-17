@@ -33,6 +33,7 @@ If a user tries to directly browse to `/reports` or `/dashboard` without logging
 - Chart.js
 - PM2
 - Nginx reverse proxy
+- puppeteer
 
 ## Repository
 - GitHub Repo: https://github.com/scottinp/cse135-site
@@ -64,7 +65,7 @@ The tracked website includes the collector script on all main pages sending anal
    Shows `page_exit` counts by `page_url`.
 
 ## 4. Export System
-The dashboard includes an export feature that generates a PDF of the current report view, allowing users to save the data visualization locally.
+The dashboard includes an export feature that generates a PDF of the current report view using Puppeteer, allowing users to save the data visualization locally. 
 
 
 ## AI Usage & Observations
